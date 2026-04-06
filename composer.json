@@ -1,0 +1,16 @@
+{
+    "name": "muna/framework",
+    "description": "Muna mini-framework",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Muna\\Framework\\": "src/"
+        },
+        "files": [
+            "src/Helpers/helpers.php"
+        ]
+    },
+    "require": {
+        "php": ">=8.4"
+    }
+}
