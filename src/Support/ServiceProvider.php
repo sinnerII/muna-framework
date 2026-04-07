@@ -4,10 +4,12 @@ namespace Muna\Framework\Support;
 
 use Muna\Framework\Foundation\Application;
 
-abstract class ServiceProvider {
+abstract class ServiceProvider
+{
     protected Application $app;
 
-    public function __construct(Application $app) {
+    public function __construct(Application $app)
+	{
         $this->app = $app;
     }
 

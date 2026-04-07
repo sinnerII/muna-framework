@@ -3,16 +3,24 @@ namespace Muna\Framework\Foundation;
 
 
 use Muna\Framework\Routing\Route;
+use Muna\Framework\Http\Request;
 use Muna\Framework\Config\Repository;
 
-class Application {
+class Application 
+{
 
-    public static $instance;
+    public static Application $instance;
+	public static Request $request;
+
     protected array $providers = [];
     public Repository $config;
 
     public function __construct() {
        self::$instance = $this;
+	   self::$request = new Request();
+
+	
+
        //$items = $this->loadConfigInitializers(); 
        //$items = [];
        //$this->config = new Repository($items);
@@ -20,7 +28,8 @@ class Application {
 
     //public static array $config = [];	
 
-	public function init() {
+	public function init()
+	{
 
         $providerClasses = \App\Providers\RouteServiceProvider::class;
         $this->providers[] = new $providerClasses($this);
@@ -29,7 +38,8 @@ class Application {
 
 	}
 
-    protected function loadRoutes() {
+    protected function loadRoutes()
+	{
 
         $basePath = dirname($_SERVER['SCRIPT_FILENAME'],2);
         $webRoutes = $basePath . '/routes/web.php';
@@ -40,7 +50,8 @@ class Application {
 
     }
 
-	public function render(mixed $output) {
+	public function render(mixed $output)
+	{
 		//file_put_contents("php://output", $output);		
 	}
 

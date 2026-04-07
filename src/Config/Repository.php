@@ -2,15 +2,18 @@
 
 namespace Muna\Framework\Config;
 
-class Repository {
+class Repository
+{
 
     protected array $items = [];
 
-    public function __construct(array $items = []) {
+    public function __construct(array $items = [])
+	{
         $this->items = $items;
     }
 
-    public function get(string $key, $default = null) {
+    public function get(string $key, $default = null)
+	{
         $array = $this->items;
 
         foreach(explode('.', $key) as $segment) {

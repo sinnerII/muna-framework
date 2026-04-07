@@ -2,7 +2,8 @@
 
 namespace Muna\Framework\Routing;
 
-class Route {
+class Route
+{
 
 	protected static array 	$routeList = [];
 	protected static array  $http;
@@ -22,49 +23,58 @@ class Route {
 			protected \Closure|array $action) {}
 
 
-	public static function get(string $uri, \Closure|array $action):static {
+	public static function get(string $uri, \Closure|array $action):static
+	{
 		return self::addRoute('GET', $uri, $action);
 	}
 
-	public static function post(string $uri, \Closure|array $action):static {
+	public static function post(string $uri, \Closure|array $action):static
+	{
 		return self::addRoute('POST', $uri, $action);
 	}
 
-	public static function put(string $uri, \Closure|array $action):static {
+	public static function put(string $uri, \Closure|array $action):static
+	{
 		return self::addRoute('PUT', $uri, $action);
 	}
 
-	public static function delete(string $uri, \Closure|array $action):static {
+	public static function delete(string $uri, \Closure|array $action):static
+	{
 		return self::addRoute('DELETE', $uri, $action);
 	}
 
-	protected static function addRoute(string $method, string $uri, \Closure|array $action ):static {
+	protected static function addRoute(string $method, string $uri, \Closure|array $action ):static
+	{
 		$route = new static($method, $uri, $action);	
 		self::$routeList[] = $route;
 		return $route;
 		
 	}
 
-	public function name(string $name): static {
+	public function name(string $name): static
+	{
 		$this->config['name'] = $name;
 		return $this;
 	}
 
 
-	protected static function httpInit() {
+	protected static function httpInit()
+	{
 		self::$http['method'] = $_SERVER['REQUEST_METHOD'];	
 		self::$http['uri']    = $_SERVER['REQUEST_URI'];
 		self::$http['query']  = $_SERVER['QUERY_STRING'];
 	}
 
-	protected static function getAction():?Route {
+	protected static function getAction(): ?Route
+	{
 	
-		$routes = array_filter(self::$routeList, fn($n) => $n->method === self::$http['method']);
+		$routes = array_filter(self::$routeList, fn($n) => $n->method === request()->method);
+		//$routes = array_filter(self::$routeList, fn($n) => $n->method === self::$http['method']);
 		return self::selectActiveRoute($routes);
 	}
 
-	protected static function selectActiveRoute(array $routes):?Route {
-		
+	protected static function selectActiveRoute(array $routes): ?Route
+	{
         $ruri = '';
 
 		foreach($routes as $route) {
@@ -110,20 +120,22 @@ class Route {
 		return null;
 	}
 	
-	public static function dispatch():void {
+	public static function dispatch():void
+	{
 		self::httpInit();
 
         $closure = self::getAction();
 
-		echo "<pre>";	
+		/*echo "<pre>";	
 		print_r($closure);
 		echo "</pre>";
+		*/
 
         if($closure->action instanceof \Closure) {
-            echo "CLOSURE";
+            //echo "CLOSURE";
             call_user_func_array($closure->action, $closure->requestParams);
         } elseif (is_array($closure->action)) {
-            echo "CONTROLLER";
+            //echo "CONTROLLER";
             [$controller, $method] = $closure->action;
             $controllerInstance = new $controller();
             $controllerInstance->$method(...$closure->requestParams);
