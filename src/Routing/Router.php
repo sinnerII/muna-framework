@@ -55,9 +55,11 @@ class Router
 		$ruri = preg_replace(['#}#','#{#'],['',''], $ruri);
 		$ruri = preg_replace('#\?\/#','?/?', $ruri);
 
-		$originUri = preg_replace('#/+#','/',$this->request->uri);
+		$originUri = rtrim(preg_replace('#/+#','/',$this->request->uri),'/');
+		//$originUri = rtrim($originUri,'/');
 
-		if(preg_match('#^'. $ruri . '$#', $originUri,$matches)) {
+		//if(preg_match('#^'. $ruri . '$#', $originUri,$matches)) {
+		if(preg_match('#^'. $ruri .'$#' , $originUri,$matches)) {
 
 			foreach($varsName[2] as $i => $key) {
 				$route->setParam($key,$matches[$i + 1]);
@@ -72,8 +74,10 @@ class Router
 	public function dispatch()
 	{
 		$route = $this->findRoute();
-		dump($route);
-		$route->execute();
+		if($route) {
+			$route->execute();
+		}
+		return null;
 	}
 
 	private function __clone() {}

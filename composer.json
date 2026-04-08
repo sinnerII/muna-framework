@@ -2,6 +2,7 @@
     "name": "muna/framework",
     "description": "Muna mini-framework",
     "type": "library",
+	"license": "MIT",
     "autoload": {
         "psr-4": {
             "Muna\\Framework\\": "src/"

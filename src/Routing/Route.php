@@ -5,12 +5,11 @@ use Muna\Framework\Foundation\Application;
 
 class Route
 {
-
 	protected array $config = [];
     protected array $requestParams = [];
 
 	public function __construct(
-			protected string $method,
+			//protected string $method,
 			protected string $uri,
 			protected \Closure|array $action)
 	{
@@ -57,12 +56,20 @@ class Route
 		return self::addRoute('DELETE', $uri, $action);
 	}
 
-	// Предусмотреть match метод
-	protected static function addRoute(string|array $method, string $uri, \Closure|array $action ):static
+	public static function match(array $methods, string $uri, \Closure|array $action): static
 	{
-		$route = new static($method, $uri, $action);	
-		//self::$routeList[] = $route;
-		Application::getInstance()->routes->addRoute($method,$route);
+		return self::addRoute($methods, $uri, $action);
+	}
+
+	protected static function addRoute(string|array $httpMethod, string $uri, \Closure|array $action ):static
+	{
+		$httpMethod = array_map(fn($n) => strtoupper($n),(array)$httpMethod);
+		$route = new Route($uri, $action);	
+
+		foreach($httpMethod as $method) {
+			Application::getInstance()->routes->addRoute($method,$route);
+		}
+
 		return $route;
 		
 	}
