@@ -14,14 +14,19 @@ class Repository
 
     public function get(string $key, $default = null)
 	{
-        $array = $this->items;
+		$array = $this->items;
+		foreach(explode('.',$key) as $segment) {
+			$array = $this->arrayWalk($segment, $array);
+			//$array = fn($segment, $array) => array_key_exists($segment,$array) && return $array[$key];
+		}
 
-        foreach(explode('.', $key) as $segment) {
-            if(!isset([$segment]))
-                return $default;
+       	return $array;
+    }
 
-            $array = $array[$segment];
-        }
-        return $array;
-    } 
+	protected function arrayWalk($key, $array)
+	{
+		if(array_key_exists($key, $array)) {
+			return $array[$key];
+		}
+	}
 }
