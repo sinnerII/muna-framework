@@ -5,70 +5,66 @@ use Muna\Framework\Routing\Route;
 use Muna\Framework\Routing\Router;
 use Muna\Framework\Routing\RouteCollection;
 use Muna\Framework\Http\Request;
+use Muna\Framework\Http\Response;
 use Muna\Framework\Config\Repository;
+use Muna\Framework\Support\Container;
 
 class Application 
 {
-
-	public static Repository  $config;
-	public RouteCollection $routes;
-
-	public protected(set)float $startTime;
-
-	protected array $providers = [];
-	protected static Request $request;
-	protected static Router $router;
-
 	private static Application $instance;
 
-
-    public function __construct()
-	{
-		self::$instance = $this;
-		$this->startTime = microtime(true);
-		$this->routes = RouteCollection::create();
-    }
-
-	public function init()
-	{
-		self::$config = new Repository($this->loadConfig());
-
-		foreach(self::$config->get('app.providers') as $provider) {
-			$providerInstance = new $provider(self::$instance);
-			$this->providers[] = $providerInstance;
-			$providerInstance->boot();
-		}
-
-		self::$request = new Request();
-		self::$router = Router::create(self::$request);
-		self::$router->dispatch();
-			
-		dump($this->timeDuration);
-	}
+	public protected(set) Repository $config;
+	public protected(set) RouteCollection $routes;
+	public protected(set) Request $request;
+	public protected(set) Response $response;
+	public protected(set) Router $router;
+	public protected(set) Container $container;
+	public protected(set) float $startTime;
 
 	public string $timeDuration {
 		get => number_format(microtime(true) - $this->startTime,3, '.', '') . 'sec';
 	}
 
-	public static function request(): Request {
-		return self::$request;
-	}
-
-	public static function router(): Router {
-		return self::$router;
-	}
-
-	public function routes(): RouteCollection
+    public function __construct()
 	{
-		return $this->routes;
-	}
+		self::$instance = $this;
+		$this->container = new Container();
+		$this->request = new Request();
+		$this->response = new Response();
+		$this->startTime = microtime(true);
+		$this->routes = RouteCollection::create();
+    }
 
 	public static function getInstance(): Application 
 	{
 		return self::$instance;
 	}
+	
+	public function init()
+	{
+		$this->loadConfig();
+		$this->loadProviders();
+		$this->router = Router::create($this->request);
+		$this->router->dispatch();
+			
+		dump($this->timeDuration);
+	}
 
-	protected function loadConfig()
+	private function loadConfig()
+	{
+		$this->config = new Repository($this->loadConfigFiles());
+	}
+
+	private function loadProviders()
+	{
+		foreach($this->config->get('app.providers') as $provider) {
+			$providerInstance = new $provider(self::$instance);
+			$this->providers[] = $providerInstance;
+			$providerInstance->boot();
+		}
+	}
+
+	protected function loadConfigFiles()
 	{
 		$result = [];
 		$configFiles = glob($_SERVER['DOCUMENT_ROOT'] . '/config/*.php');

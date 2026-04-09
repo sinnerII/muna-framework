@@ -13,7 +13,8 @@ if (!function_exists('app')) {
 if (!function_exists('request')) {
     function request(): Request
 	{
-        return Application::Request();
+        //return Application::Request();
+        return app()->request;
     }
 }
 
@@ -26,7 +27,6 @@ if (!function_exists('dump')) {
 		$result .= '<h6 style="margin:0; padding:0; padding-bottom:5px;color: orange;">'.$trace[0]['file'].': '.$trace[0]['line'].'</h6>';
 		$result .= '<pre style="margin: 5px 0px 5px 0px">';
 		$result .= print_r($var, true);
-		//$result .= var_export($var,true);	
 		$result .= '</pre>';
 		$result .= "</div>";
 		echo $result;
@@ -37,6 +37,6 @@ if (!function_exists('dump')) {
 if (!function_exists('config')) {
     function config(string $key)
 	{
-        return app()::$config->get($key);
+        return app()->config->get($key);
     }
 }

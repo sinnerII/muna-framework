@@ -27,7 +27,7 @@ class Router
 
 	protected function findRoute(): ?Route
 	{
-		foreach(Application::getInstance()->routes()->getRoutesByMethod($this->request->method) as $route) {
+		foreach(Application::getInstance()->routes->getRoutesByMethod($this->request->method) as $route) {
 			if($this->matchRoute($route)) {
 				return $route;
 			}
