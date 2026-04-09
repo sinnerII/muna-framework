@@ -17,7 +17,6 @@ class Application
 	public protected(set) RouteCollection $routes;
 	public protected(set) Request $request;
 	public protected(set) Response $response;
-	public protected(set) Router $router;
 	public protected(set) Container $container;
 	public protected(set) float $startTime;
 
@@ -44,9 +43,7 @@ class Application
 	{
 		$this->loadConfig();
 		$this->loadProviders();
-		$this->router = Router::create($this->request);
-		$this->router->dispatch();
-			
+		$this->container->get('router')->dispatch();
 		dump($this->timeDuration);
 	}
 

@@ -2,10 +2,10 @@
 
 namespace Muna\Framework\Support\Facades;
 
-class Cache extends Facade
+class Route extends Facade
 {
 	public static function getFacadeAccessor(): string
 	{
-		return 'cache';
+		return 'router';
 	}
 }

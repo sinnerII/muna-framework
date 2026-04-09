@@ -4,22 +4,70 @@ namespace Muna\Framework\Routing;
 
 use Muna\Framework\Foundation\Application;
 use Muna\Framework\Http\Request;
-use Muna\Framework\Routing\Route;
-use Muna\Framework\Routing\RouteCollection;
 
 class Router
 {
 	protected static ?Router $instance = null;
 	protected Request $request;
+	protected RouteCollection $routeList;
 
-	private function __construct(Request $req){
+	private function __construct(Request $req, RouteCollection $routeList){
 		$this->request = $req;
+		$this->routes = $routeList;
 	}
 
-	public static function create(Request $req): Router
+    public function getMethod()
+    {
+        return $this->request->method;
+    }
+
+    public function getUri()
+    {
+        return $this->request->uri;
+    }
+
+    public function get(string $uri, \Closure|array $action): Route
+    {
+        return $this->addRoute(['GET'], $uri, $action);
+    }
+
+    public function post(string $uri, \Closure|array $action): Route
+    {
+        return $this->addRoute(['POST'], $uri, $action);
+    }
+
+    public function put(string $uri, \Closure|array $action): Route
+    {
+        return $this->addRoute(['PUT'], $uri, $action);
+    }
+
+    public function delete(string $uri, \Closure|array $action): Route
+    {
+        return $this->addRoute(['DELETE'], $uri, $action);
+    }
+
+    public function match(array $methods, string $uri, \Closure|array $action): Route
+    {
+        return $this->addRoute($methods, $uri, $action);
+    }
+
+    protected function addRoute(string|array $httpMethod, string $uri, \Closure|array $action ): Route
+    {
+        $httpMethod = array_map(fn($n) => strtoupper($n),$httpMethod);
+        $route = new Route($uri, $action);
+
+        foreach($httpMethod as $method) {
+			$this->routes->addRoute($method, $route);
+        }
+
+        return $route;
+
+    }
+
+	public static function create(Request $req, RouteCollection $routeList): Router
 	{
 		if(self::$instance === null) {
-			self::$instance = new self($req);
+			self::$instance = new self($req, $routeList);
 		} 
 		
 		return self::$instance;
@@ -56,9 +104,7 @@ class Router
 		$ruri = preg_replace('#\?\/#','?/?', $ruri);
 
 		$originUri = rtrim(preg_replace('#/+#','/',$this->request->uri),'/');
-		//$originUri = rtrim($originUri,'/');
 
-		//if(preg_match('#^'. $ruri . '$#', $originUri,$matches)) {
 		if(preg_match('#^'. $ruri .'$#' , $originUri,$matches)) {
 
 			foreach($varsName[2] as $i => $key) {

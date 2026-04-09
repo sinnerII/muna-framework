@@ -17,7 +17,6 @@ class Repository
 		$array = $this->items;
 		foreach(explode('.',$key) as $segment) {
 			$array = $this->arrayWalk($segment, $array);
-			//$array = fn($segment, $array) => array_key_exists($segment,$array) && return $array[$key];
 		}
 
        	return $array;
