@@ -13,4 +13,9 @@ class Response
     {
 
     }
+
+    public function __test()
+    {
+
+    }
 }
