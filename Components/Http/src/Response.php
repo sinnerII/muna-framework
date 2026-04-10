@@ -8,4 +8,9 @@ class Response
 	{
 
 	}
+
+    public function __save()
+    {
+
+    }
 }
