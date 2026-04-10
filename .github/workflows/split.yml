@@ -23,7 +23,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Настройка SSH ключа для пуша в целевой репозиторий
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
@@ -33,9 +32,9 @@ jobs:
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
 
-      # Используем актуальный экшен от Symplify
+      # Используем ветку main вместо v1.1
       - name: Split and Push
-        uses: symplify/monorepo-split-github-action@v1.1
+        uses: symplify/monorepo-split-github-action@main
         with:
           package_directory: ${{ matrix.package.local_path }}
           package_repository: 'git@github.com:sinnerII/${{ matrix.package.repository }}.git'
