@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         package:
-          - local_path: 'src/Components/Http'
+          - local_path: 'Components/Http'
             repository: 'munastack-http'
 
     steps:
