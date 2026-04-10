@@ -23,15 +23,17 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Настройка SSH ключа с использованием вашего секрета MUNA
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           ssh-agent -a /tmp/ssh_agent.sock > /dev/null
-          echo "${{ secrets.HTTP_DEPLOY_KEY }}" | tr -d '\r' | ssh-add -
+          echo '${{ secrets.MUNA }}' | tr -d '\r' | ssh-add -
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
 
+      # Процесс разделения и отправки кода
       - name: Split and Push
         uses: symplify/monorepo-split-github-action@main
         with:
@@ -39,8 +41,7 @@ jobs:
           package_repository: 'git@github.com:sinnerII/${{ matrix.package.repository }}.git'
           branch: main
           user_name: "sinnerII"
-          user_email: "bsdamulet@gmail.com"
+          user_email: "pavel@example.com"
         env:
-          # ДОБАВЬТЕ ЭТУ СТРОКУ:
-          GITHUB_TOKEN: ${{ secrets.MUNA}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
