@@ -29,20 +29,19 @@ jobs:
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           ssh-agent -a /tmp/ssh_agent.sock > /dev/null
           echo '${{ secrets.MUNA }}' | tr -d '\r' | ssh-add -
+          # Принудительно ставим конфиг и здесь
+          git config --global url."git@github.com:".insteadOf "https://github.com/"
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-
-      # Принудительно заставляем Git использовать SSH вместо HTTPS для github.com
-      - name: Force SSH for GitHub
-        run: |
-          git config --global url."git@github.com:".insteadOf "https://github.com/"
 
       - name: Split and Push
         uses: symplify/monorepo-split-github-action@main
         with:
           package_directory: ${{ matrix.package.local_path }}
           
-          # Указываем детали репозитория для корректного разрешения путей
+          # Явно передаем SSH URL как параметр репозитория
+          package_repository: 'git@github.com:sinnerII/${{ matrix.package.repository }}.git'
+          
           repository_host: github.com
           repository_organization: 'sinnerII'
           repository_name: ${{ matrix.package.repository }}
@@ -51,7 +50,5 @@ jobs:
           user_name: "sinnerII"
           user_email: "pavel@example.com"
         env:
-          # Токен нужен экшену для инициализации
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Сокет нужен для аутентификации пуша через SSH
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
