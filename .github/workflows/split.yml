@@ -28,7 +28,7 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           ssh-agent -a /tmp/ssh_agent.sock > /dev/null
-          ssh-add - <<< "${{ secrets.MUNA }}"
+          echo "${{ secrets.HTTP_DEPLOY_KEY }}" | tr -d '\r' | ssh-add -
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
 
@@ -39,6 +39,8 @@ jobs:
           package_repository: 'git@github.com:sinnerII/${{ matrix.package.repository }}.git'
           branch: main
           user_name: "sinnerII"
-          user_email: "bsdamulet@gmail.com"
+          user_email: "pavel@example.com"
         env:
+          # ДОБАВЬТЕ ЭТУ СТРОКУ:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
