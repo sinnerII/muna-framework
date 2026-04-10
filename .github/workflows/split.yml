@@ -1,12 +1,10 @@
 name: Packages Split
-
 on:
   push:
     branches:
       - main
     tags:
-      - '*'
-
+      - '*' 
 jobs:
   packages_split:
     runs-on: ubuntu-latest
@@ -16,7 +14,6 @@ jobs:
         package:
           - local_path: 'Components/Http'
             repository: 'munastack-http'
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -26,29 +23,17 @@ jobs:
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
+          echo "${{ secrets.MUNA }}" | tr -d '\r' > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan github.com >> ~/.ssh/known_hosts
-          ssh-agent -a /tmp/ssh_agent.sock > /dev/null
-          echo '${{ secrets.MUNA }}' | tr -d '\r' | ssh-add -
-          # Принудительно ставим конфиг и здесь
           git config --global url."git@github.com:".insteadOf "https://github.com/"
-        env:
-          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
 
       - name: Split and Push
         uses: symplify/monorepo-split-github-action@main
         with:
           package_directory: ${{ matrix.package.local_path }}
-          
-          # Явно передаем SSH URL как параметр репозитория
-          package_repository: 'git@github.com:sinnerII/${{ matrix.package.repository }}.git'
-          
-          repository_host: github.com
           repository_organization: 'sinnerII'
           repository_name: ${{ matrix.package.repository }}
-          
           branch: main
           user_name: "sinnerII"
-          user_email: "pavel@example.com"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+          user_email: "bsdamulet@gmail.com"
