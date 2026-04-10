@@ -42,5 +42,5 @@ jobs:
           user_email: "pavel@example.com"
         env:
           # ДОБАВЬТЕ ЭТУ СТРОКУ:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.MUNA}}
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
