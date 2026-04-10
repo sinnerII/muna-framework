@@ -23,7 +23,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      # 1. Настройка SSH ключа
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
@@ -33,14 +32,18 @@ jobs:
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
 
-      # 2. Сплит и Пуш через SSH
       - name: Split and Push
         uses: symplify/monorepo-split-github-action@main
         with:
           package_directory: ${{ matrix.package.local_path }}
           
-          # Используем ТОЛЬКО SSH-адрес. Это уберет ошибку с запросом пароля.
+          # 1. Указываем полный SSH путь для безопасного PUSH
           package_repository: 'git@github.com:sinnerII/${{ matrix.package.repository }}.git'
+          
+          # 2. Указываем детали для корректного CLONE (чтобы не было // в ссылке)
+          repository_host: github.com
+          repository_organization: 'sinnerII'
+          repository_name: ${{ matrix.package.repository }}
           
           branch: main
           user_name: "sinnerII"
