@@ -32,7 +32,6 @@ jobs:
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
 
-      # Используем ветку main вместо v1.1
       - name: Split and Push
         uses: symplify/monorepo-split-github-action@main
         with:
@@ -40,6 +39,6 @@ jobs:
           package_repository: 'git@github.com:sinnerII/${{ matrix.package.repository }}.git'
           branch: main
           user_name: "sinnerII"
-          user_email: "pavel@example.com"
+          user_email: "bsdamulet@gmail.com"
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
