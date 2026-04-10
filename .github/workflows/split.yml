@@ -16,9 +16,6 @@ jobs:
         package:
           - local_path: 'src/Components/Http'
             repository: 'munastack-http'
-          # Сюда в будущем добавите другие компоненты:
-          # - local_path: 'src/Components/Databases'
-          #   repository: 'munastack-databases'
 
     steps:
       - name: Checkout code
@@ -26,8 +23,8 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Настройка SSH ключа для пуша в целевой репозиторий
       - name: Setup SSH
-        shell: bash
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan github.com >> ~/.ssh/known_hosts
@@ -36,13 +33,13 @@ jobs:
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
 
+      # Используем актуальный экшен от Symplify
       - name: Split and Push
-        uses: driesvints/monorepo-split-github-action@v1.0.1
+        uses: symplify/monorepo-split-github-action@v1.1
         with:
           package_directory: ${{ matrix.package.local_path }}
-          package_repository: ${{ matrix.package.repository }}
-          repository_host: github.com
-          repository_organization: 'sinnerII'
+          package_repository: 'git@github.com:sinnerII/${{ matrix.package.repository }}.git'
+          branch: main
           user_name: "sinnerII"
           user_email: "pavel@example.com"
         env:
