@@ -31,3 +31,4 @@ jobs:
           branch: main
           user_name: "sinnerII"
           user_email: "bsdamulet@gmail.com"
+          tag: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
