@@ -23,7 +23,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Настройка SSH ключа с использованием секрета MUNA
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
