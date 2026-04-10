@@ -39,7 +39,7 @@ jobs:
           package_repository: 'git@github.com:sinnerII/${{ matrix.package.repository }}.git'
           branch: main
           user_name: "sinnerII"
-          user_email: "pavel@example.com"
+          user_email: "bsdamulet@gmail.com"
         env:
           # ДОБАВЬТЕ ЭТУ СТРОКУ:
           GITHUB_TOKEN: ${{ secrets.MUNA}}
