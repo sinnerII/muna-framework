@@ -15,7 +15,10 @@ jobs:
       matrix:
         package:
           - local_path: 'src/Components/Http'
-            repository: 'munastack-http' # Название репозитория из вашей ссылки
+            repository: 'munastack-http'
+          # Сюда в будущем добавите другие компоненты:
+          # - local_path: 'src/Components/Databases'
+          #   repository: 'munastack-databases'
 
     steps:
       - name: Checkout code
@@ -23,20 +26,24 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup SSH
+        shell: bash
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          ssh-agent -a /tmp/ssh_agent.sock > /dev/null
+          ssh-add - <<< "${{ secrets.HTTP_DEPLOY_KEY }}"
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+
       - name: Split and Push
         uses: driesvints/monorepo-split-github-action@v1.0.1
         with:
           package_directory: ${{ matrix.package.local_path }}
           package_repository: ${{ matrix.package.repository }}
           repository_host: github.com
-          repository_organization: 'sinnerII' # Ваш логин
+          repository_organization: 'sinnerII'
           user_name: "sinnerII"
           user_email: "pavel@example.com"
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
-          ssh-add - <<< "${{ secrets.HTTP_DEPLOY_KEY }}"
-          # Запуск встроенного процесса сплита
