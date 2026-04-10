@@ -4,7 +4,7 @@ on:
     branches:
       - main
     tags:
-      - '*' 
+      - '*'
 jobs:
   packages_split:
     runs-on: ubuntu-latest
@@ -20,16 +20,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.MUNA }}" | tr -d '\r' > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-          git config --global url."git@github.com:".insteadOf "https://github.com/"
-
       - name: Split and Push
         uses: symplify/monorepo-split-github-action@main
+        env:
+          PAT: ${{ secrets.PAT_TOKEN }}
         with:
           package_directory: ${{ matrix.package.local_path }}
           repository_organization: 'sinnerII'
