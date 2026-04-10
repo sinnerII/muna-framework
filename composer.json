@@ -6,14 +6,13 @@
     "autoload": {
         "psr-4": {
             "Muna\\Framework\\": "src/",
-            "Munastack\\": "Components/*"
+            "Munastack\\Http\\": "Components/Http/src/"
         },
         "files": [
             "src/Helpers/helpers.php"
         ]
     },
     "require": {
-        "php": ">=8.4",
-        "munastack/http" : "self.version"
+        "php": ">=8.4"
     }
 }

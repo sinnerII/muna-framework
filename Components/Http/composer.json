@@ -9,5 +9,8 @@
         "psr-4": {
             "Munastack\\Http\\": "src/"
         }
+    },
+    "require": {
+        "php": "^8.4"
     }
 }
