@@ -5,7 +5,8 @@
 	"license": "MIT",
     "autoload": {
         "psr-4": {
-            "Muna\\Framework\\": "src/"
+            "Muna\\Framework\\": "src/",
+            "Munastack\\": "Components/*"
         },
         "files": [
             "src/Helpers/helpers.php"

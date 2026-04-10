@@ -3,12 +3,11 @@
     "description": "MunaStack HTTP Component",
     "license": "MIT",
     "require": {
-        "php": "^8.4",
-        "psr/http-message": "^2.0"
+        "php": "^8.4"
     },
     "autoload": {
         "psr-4": {
-            "MunaStack\\Http\\": "src/"
+            "Munastack\\Http\\": "src/"
         }
     }
 }
