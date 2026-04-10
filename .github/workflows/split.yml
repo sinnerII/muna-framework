@@ -32,22 +32,20 @@ jobs:
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
 
+      # ЭТОТ ШАГ ПРИНУДИТЕЛЬНО ПЕРЕКЛЮЧАЕТ GIT НА SSH
+      - name: Force SSH for GitHub
+        run: |
+          git config --global url."git@github.com:".insteadOf "https://github.com/"
+
       - name: Split and Push
         uses: symplify/monorepo-split-github-action@main
         with:
           package_directory: ${{ matrix.package.local_path }}
-          
-          # 1. Указываем полный SSH путь для безопасного PUSH
           package_repository: 'git@github.com:sinnerII/${{ matrix.package.repository }}.git'
-          
-          # 2. Указываем детали для корректного CLONE (чтобы не было // в ссылке)
-          repository_host: github.com
-          repository_organization: 'sinnerII'
-          repository_name: ${{ matrix.package.repository }}
-          
           branch: main
           user_name: "sinnerII"
           user_email: "pavel@example.com"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Мы убираем GITHUB_TOKEN из env этого шага, чтобы экшен 
+          # не пытался использовать его для HTTPS авторизации
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
