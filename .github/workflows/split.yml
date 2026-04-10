@@ -32,7 +32,7 @@ jobs:
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
 
-      # ЭТОТ ШАГ ПРИНУДИТЕЛЬНО ПЕРЕКЛЮЧАЕТ GIT НА SSH
+      # Принудительно заставляем Git использовать SSH вместо HTTPS для github.com
       - name: Force SSH for GitHub
         run: |
           git config --global url."git@github.com:".insteadOf "https://github.com/"
@@ -41,11 +41,17 @@ jobs:
         uses: symplify/monorepo-split-github-action@main
         with:
           package_directory: ${{ matrix.package.local_path }}
-          package_repository: 'git@github.com:sinnerII/${{ matrix.package.repository }}.git'
+          
+          # Указываем детали репозитория для корректного разрешения путей
+          repository_host: github.com
+          repository_organization: 'sinnerII'
+          repository_name: ${{ matrix.package.repository }}
+          
           branch: main
           user_name: "sinnerII"
           user_email: "pavel@example.com"
         env:
-          # Мы убираем GITHUB_TOKEN из env этого шага, чтобы экшен 
-          # не пытался использовать его для HTTPS авторизации
+          # Токен нужен экшену для инициализации
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Сокет нужен для аутентификации пуша через SSH
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
