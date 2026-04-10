@@ -12,7 +12,6 @@
         ]
     },
     "require": {
-        "php": ">=8.4",
-        "munastack/http" : "self.version"
+        "php": ">=8.4"
     }
 }

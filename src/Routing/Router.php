@@ -2,18 +2,23 @@
 
 namespace Muna\Framework\Routing;
 
+use Closure;
 use Muna\Framework\Foundation\Application;
 use Muna\Framework\Http\Request;
+use Muna\Framework\Http\Response;
 
 class Router
 {
 	protected static ?Router $instance = null;
 	protected Request $request;
-	protected RouteCollection $routeList;
+	protected Response $response;
+	protected RouteCollection $routes;
+	
 
-	private function __construct(Request $req, RouteCollection $routeList){
-		$this->request = $req;
-		$this->routes = $routeList;
+	private function __construct(){
+		$this->request = new Request();
+		$this->response = new Response();
+		$this->routes = RouteCollection::create();
 	}
 
     public function getMethod()
@@ -26,32 +31,32 @@ class Router
         return $this->request->uri;
     }
 
-    public function get(string $uri, \Closure|array $action): Route
+    public function get(string $uri, Closure|array $action): Route
     {
         return $this->addRoute(['GET'], $uri, $action);
     }
 
-    public function post(string $uri, \Closure|array $action): Route
+    public function post(string $uri, Closure|array $action): Route
     {
         return $this->addRoute(['POST'], $uri, $action);
     }
 
-    public function put(string $uri, \Closure|array $action): Route
+    public function put(string $uri, Closure|array $action): Route
     {
         return $this->addRoute(['PUT'], $uri, $action);
     }
 
-    public function delete(string $uri, \Closure|array $action): Route
+    public function delete(string $uri, Closure|array $action): Route
     {
         return $this->addRoute(['DELETE'], $uri, $action);
     }
 
-    public function match(array $methods, string $uri, \Closure|array $action): Route
+    public function match(array $methods, string $uri, Closure|array $action): Route
     {
         return $this->addRoute($methods, $uri, $action);
     }
 
-    protected function addRoute(string|array $httpMethod, string $uri, \Closure|array $action ): Route
+    protected function addRoute(string|array $httpMethod, string $uri, Closure|array $action ): Route
     {
         $httpMethod = array_map(fn($n) => strtoupper($n),$httpMethod);
         $route = new Route($uri, $action);
@@ -64,10 +69,10 @@ class Router
 
     }
 
-	public static function create(Request $req, RouteCollection $routeList): Router
+	public static function create(): Router
 	{
 		if(self::$instance === null) {
-			self::$instance = new self($req, $routeList);
+			self::$instance = new self();
 		} 
 		
 		return self::$instance;
@@ -75,7 +80,7 @@ class Router
 
 	protected function findRoute(): ?Route
 	{
-		foreach(Application::getInstance()->routes->getRoutesByMethod($this->request->method) as $route) {
+		foreach($this->routes->getRoutesByMethod($this->request->method) as $route) {
 			if($this->matchRoute($route)) {
 				return $route;
 			}
@@ -88,7 +93,6 @@ class Router
 	{
 		$ruri = $route->getUri();
 
-		// 1 . Находим переменные части
 		preg_match_all('#\{(([a-zA-Z_]+)(\??))\}#ui',$ruri,$varsName);
 
 		foreach($varsName[2] as $key => $var) {
@@ -127,4 +131,11 @@ class Router
 	}
 
 	private function __clone() {}
+
+	public function __call($method, $args) {
+
+		dump("Execute method: $method");
+		dump($args);
+
+	}
 }

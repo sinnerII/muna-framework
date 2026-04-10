@@ -1,0 +1,42 @@
+name: Packages Split
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - '*'
+
+jobs:
+  packages_split:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - local_path: 'src/Components/Http'
+            repository: 'munastack-http' # Название репозитория из вашей ссылки
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Split and Push
+        uses: driesvints/monorepo-split-github-action@v1.0.1
+        with:
+          package_directory: ${{ matrix.package.local_path }}
+          package_repository: ${{ matrix.package.repository }}
+          repository_host: github.com
+          repository_organization: 'sinnerII' # Ваш логин
+          user_name: "sinnerII"
+          user_email: "pavel@example.com"
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+          ssh-add - <<< "${{ secrets.HTTP_DEPLOY_KEY }}"
+          # Запуск встроенного процесса сплита

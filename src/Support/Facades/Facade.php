@@ -4,18 +4,23 @@ namespace Muna\Framework\Support\Facades;
 
 abstract class Facade
 {
-	protected static $container;
+	protected static $app;
 
-	public static function setContainer($container): void
+	public static function setFacadeApplication($app)
 	{
-		static::$container = $container;
+		static::$app = $app;
+	}
+
+	public static function getFacadeApplication()
+	{
+		return static::$app;
 	}
 
 	public abstract static function getFacadeAccessor(): string;
 
 	public static function __callStatic(string $method, array $args)
 	{
-		$instance = static::$container->get(static::getFacadeAccessor());	
+		$instance = static::$app->container->get(static::getFacadeAccessor());	
 
 		if(!$instance) {
 			throw new \Exception("Service not found in container");

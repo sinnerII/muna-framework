@@ -1,76 +1,71 @@
 <?php
+
 namespace Muna\Framework\Foundation;
 
-use Muna\Framework\Routing\Route;
-use Muna\Framework\Routing\Router;
-use Muna\Framework\Routing\RouteCollection;
-use Muna\Framework\Http\Request;
-use Muna\Framework\Http\Response;
 use Muna\Framework\Config\Repository;
 use Muna\Framework\Support\Container;
 
-class Application 
+class Application
 {
-	private static Application $instance;
+    private static Application $instance;
+    private array $providers = [];
 
-	public protected(set) Repository $config;
-	public protected(set) RouteCollection $routes;
-	public protected(set) Request $request;
-	public protected(set) Response $response;
-	public protected(set) Container $container;
-	public protected(set) float $startTime;
+    public protected(set) Repository $config;
+    public protected(set) Container $container;
 
-	public string $timeDuration {
-		get => number_format(microtime(true) - $this->startTime,3, '.', '') . 'sec';
-	}
+    public protected(set) float $startTime;
+    // phpcs:disable
+    public string $timeDuration {
+        get => number_format(microtime(true) - $this->startTime,3, '.', '') . 'sec';
+    }
+    // phpcs:enable
 
-    public function __construct()
-	{
-		self::$instance = $this;
-		$this->container = new Container();
-		$this->request = new Request();
-		$this->response = new Response();
-		$this->startTime = microtime(true);
-		$this->routes = RouteCollection::create();
+    public function __construct(public protected(set) string $basePath)
+    {
+        self::$instance = $this;
+        $this->startTime = microtime(true);
+        $this->container = new Container();
     }
 
-	public static function getInstance(): Application 
-	{
-		return self::$instance;
-	}
-	
-	public function init()
-	{
-		$this->loadConfig();
-		$this->loadProviders();
-		$this->container->get('router')->dispatch();
-		dump($this->timeDuration);
-	}
+    public static function getInstance(): Application
+    {
+        return self::$instance;
+    }
 
-	private function loadConfig()
-	{
-		$this->config = new Repository($this->loadConfigFiles());
-	}
+    public function init(): void
+    {
+        $this->loadConfig();
+        $this->loadProviders();
+        $this->container->get('router')->dispatch();
 
-	private function loadProviders()
-	{
-		foreach($this->config->get('app.providers') as $provider) {
-			$providerInstance = new $provider(self::$instance);
-			$this->providers[] = $providerInstance;
-			$providerInstance->boot();
-		}
-	}
+        dump($this->timeDuration);
+    }
 
-	protected function loadConfigFiles()
-	{
-		$result = [];
-		$configFiles = glob($_SERVER['DOCUMENT_ROOT'] . '/config/*.php');
-		
-		foreach($configFiles as $file) {
-			$key = preg_replace('/\.php/','',basename($file));
-			$result[$key] = require $file;
-		}
+    private function loadConfig(): void
+    {
+        $result = [];
+        $configPath = $this->basePath . '/config';
 
-		return $result;		
-	}
+        if (is_dir($configPath)) {
+            $configFiles = glob($configPath . '/*.php');
+            foreach ($configFiles as $file) {
+                $result[pathinfo($file)['filename']] = require $file;
+            }
+        }
+
+        $this->config = new Repository($result);
+    }
+
+    private function loadProviders(): void
+    {
+        foreach ($this->config->get('app.providers') as $provider) {
+            $providerInstance = new $provider(self::$instance);
+            $this->providers[] = $providerInstance;
+            $providerInstance->register();
+        }
+
+        foreach ($this->providers as $provider) {
+            $provider->boot();
+        }
+    }
 }

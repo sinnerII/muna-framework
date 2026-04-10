@@ -1,6 +1,8 @@
 <?php
 
 namespace Muna\Framework\Routing;
+
+use Closure;
 use Muna\Framework\Foundation\Application;
 
 class Route
@@ -9,7 +11,6 @@ class Route
     protected array $requestParams = [];
 
 	public function __construct(
-			//protected string $method,
 			protected string $uri,
 			protected \Closure|array $action)
 	{
@@ -36,45 +37,7 @@ class Route
 		$this->requestParams[$key] = $value;
 	}
 
-	public static function get(string $uri, \Closure|array $action):static
-	{
-		return self::addRoute('GET', $uri, $action);
-	}
-
-	public static function post(string $uri, \Closure|array $action):static
-	{
-		return self::addRoute('POST', $uri, $action);
-	}
-
-	public static function put(string $uri, \Closure|array $action):static
-	{
-		return self::addRoute('PUT', $uri, $action);
-	}
-
-	public static function delete(string $uri, \Closure|array $action):static
-	{
-		return self::addRoute('DELETE', $uri, $action);
-	}
-
-	public static function match(array $methods, string $uri, \Closure|array $action): static
-	{
-		return self::addRoute($methods, $uri, $action);
-	}
-
-	protected static function addRoute(string|array $httpMethod, string $uri, \Closure|array $action ):static
-	{
-		$httpMethod = array_map(fn($n) => strtoupper($n),(array)$httpMethod);
-		$route = new Route($uri, $action);	
-
-		foreach($httpMethod as $method) {
-			Application::getInstance()->routes->addRoute($method,$route);
-		}
-
-		return $route;
-		
-	}
-
-	public function name(string $name): static
+	public function name(string $name): Route
 	{
 		$this->config['name'] = $name;
 		return $this;
@@ -82,22 +45,12 @@ class Route
 
 	public function execute():void
 	{
-		if($this->action instanceof \Closure) {
+		if($this->action instanceof Closure) {
             call_user_func_array($this->action, $this->requestParams);
         } elseif (is_array($this->action)) {
             [$controller, $method] = $this->action;
             $controllerInstance = new $controller();
             $controllerInstance->$method(...$this->requestParams);
         }
-	}
-
-	public static function getRoutes(): array
-	{
-		return self::$routeList;
-	}
-
-	public static function getRoutesByMethod(string $method): array
-	{
-		return array_filter(self::$routeList, fn($n) => $n->method === $method);
 	}
 }
