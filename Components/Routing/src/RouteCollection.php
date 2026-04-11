@@ -1,6 +1,6 @@
 <?php
 
-namespace Muna\Framework\Routing;
+namespace Munastack\Routing;
 
 class RouteCollection {
 	

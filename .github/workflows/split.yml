@@ -14,6 +14,8 @@ jobs:
         package:
           - local_path: 'Components/Http'
             repository: 'munastack-http'
+          - local_path: 'Components/Routing'
+            repository: 'munastack-routing'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

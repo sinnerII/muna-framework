@@ -1,6 +1,6 @@
 <?php
 
-namespace Muna\Framework\Routing;
+namespace Munastack\Routing;
 
 use Closure;
 use Muna\Framework\Foundation\Application;
