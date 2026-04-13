@@ -14,10 +14,13 @@ class Router
 	protected RouteCollection $routes;
 	
 
-	private function __construct(){
-		$this->request = new Request();
-		$this->response = new Response();
+	private function __construct(Request $request, Response $response){
+
 		$this->routes = RouteCollection::create();
+        $this->request = $request;
+        $this->response = $response;
+
+        //dump(app()::getInstance()->container->get('response'));
 	}
 
     public function get(string $uri, Closure|array $action): Route
@@ -58,12 +61,12 @@ class Router
 
     }
 
-	public static function create(): Router
+	public static function create(Request $request, Response $response): Router
 	{
 		if(self::$instance === null) {
-			self::$instance = new self();
+			self::$instance = new self($request, $response);
 		} 
-		
+       
 		return self::$instance;
 	}
 
@@ -82,12 +85,17 @@ class Router
 	{
 		$ruri = $route->getUri();
 
-		preg_match_all('#\{(([a-zA-Z_]+)(\??))\}#ui',$ruri,$varsName);
+        dump($ruri);
+        //$uriWitchParams = $this->prepareParameters($route);
+
+		//preg_match_all('#\{([a-zA-Z_]+)(\??))\}#ui',$ruri,$varsName);
+		preg_match_all('#{(([a-zA-Z_]+)(\??))}#ui',$ruri,$varsName);
+        
 
 		foreach($varsName[2] as $key => $var) {
 			if(array_key_exists($var, config('app.params'))) {
-				//$find = '#\{'. $var . '\}#';
 				$find = '/\b' . $var . '\b/';
+                //dump("FIND: " . $find);
 				$replace = '('. config('app.params')[$var]. ')';
 				$ruri = preg_replace($find, $replace, $ruri);
 			}   
@@ -96,19 +104,64 @@ class Router
 		$ruri = preg_replace(['#}#','#{#'],['',''], $ruri);
 		$ruri = preg_replace('#\?\/#','?/?', $ruri);
 
-		$originUri = rtrim(preg_replace('#/+#','/',$this->request->uri),'/');
 
-		if(preg_match('#^'. $ruri .'$#' , $originUri,$matches)) {
 
+		//$originUri = rtrim(preg_replace('#/+#','/',$this->request->uri),'/');
+		$originUri = $this->request->uri;
+        $ruri = rtrim($ruri, '/');
+
+        //dump($ruri);
+
+        
+		//if(preg_match('#^'. $ruri .'$#' , $originUri,$matches)) {
+        $match = '#^' . $ruri . '$#';
+        //dump("RURI: " . $ruri);
+        //dump("MATCH: " . $match);
+        //dump("ORIGIN: ". $originUri);
+		if(preg_match($match , $originUri,$matches)) {
+
+            //dump($varsName[2]);
 			foreach($varsName[2] as $i => $key) {
 				$route->setParam($key,$matches[$i + 1]);
+				//$route->setParam($key,$matches[$i]);
 			}
-
+            //dump($route);
 			return true;
 		}
 
 		return false;
 	}
+
+    protected function prepareParameters(Route $route): void
+    {
+        dump($route->getUri());
+		preg_match_all('#\{(([a-zA-Z_]+)(\??))\}#ui',$route->getUri(),$varsName);
+        dump($varsName);
+
+        $ruri = $route->getUri();
+		foreach($varsName[2] as $key => $var) {
+			if(array_key_exists($var, config('app.params'))) {
+				$find = '/\b' . $var . '\b/';
+				$replace = '('. config('app.params')[$var]. ')';
+				$ruri = preg_replace($find, $replace, $ruri);
+			}   
+		}   
+
+
+		$ruri = preg_replace(['#}#','#{#'],['',''], $ruri);
+		$ruri = preg_replace('#\?\/#','?/?', $ruri);
+
+        //dump("RESULT:");
+        //dump($ruri);
+
+        if(preg_match('#^' .$ruri. '$#', $route->getUri(), $matches)){
+            //dump($matches);
+        }
+
+        //dump($ruri);
+
+    }
+
 
 	public function dispatch()
 	{

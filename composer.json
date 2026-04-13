@@ -3,6 +3,14 @@
     "description": "Muna mini-framework",
     "type": "library",
 	"license": "MIT",
+    "keywords": [
+        "framework",
+        "muna"
+    ],
+    "homepage": "https://github.com/sinnerII/muna-framework",
+    "suport": {
+        "source": "https://github.com/sinnerII/muna-framework"
+    },
     "autoload": {
         "psr-4": {
             "Munastack\\": "src/Munastack/"
@@ -12,7 +20,8 @@
         ]
     },
     "require": {
-        "php": ">=8.4"
+        "php": ">=8.4",
+        "psr/container": "^2.0"
     },
     "replace": {
         "munastack/http": "self.version",

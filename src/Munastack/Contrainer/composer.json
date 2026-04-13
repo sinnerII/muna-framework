@@ -1,17 +1,17 @@
 {
-    "name": "munastack/routing",
-    "description": "Munastack Routing package",
+    "name": "munastack/container",
+    "description": "The MunaStack Container package",
     "license": "MIT",
     "require": {
         "php": "^8.4"
     },
     "autoload": {
         "psr-4": {
-            "Munastack\\Routing\\": ""
+            "Munastack\\Container\\": ""
         }
     },
     "require": {
         "php": ">=8.4",
-        "munastack/http" : "^1.0"
+        "psr/container": "^2.0"
     }
 }

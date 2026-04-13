@@ -9,6 +9,7 @@ class Container
 	public function set($key, $obj)
 	{
 		$this->services[$key] = $obj;
+        return $obj;
 	}
 
 	public function get($key)

@@ -3,7 +3,6 @@
 namespace Munastack\Routing;
 
 use Closure;
-use Muna\Framework\Foundation\Application;
 
 class Route
 {
@@ -12,7 +11,7 @@ class Route
 
 	public function __construct(
 			protected string $uri,
-			protected \Closure|array $action)
+			protected Closure|array $action)
 	{
 	
 	}
@@ -45,12 +44,38 @@ class Route
 
 	public function execute():void
 	{
+        $resolveParams = $this->resolveParams($this->action, $this->requestParams);
+
 		if($this->action instanceof Closure) {
-            call_user_func_array($this->action, $this->requestParams);
+            //call_user_func_array($this->action, $this->requestParams);
+            call_user_func_array($this->action, $resolveParams);
         } elseif (is_array($this->action)) {
             [$controller, $method] = $this->action;
             $controllerInstance = new $controller();
-            $controllerInstance->$method(...$this->requestParams);
+            //$controllerInstance->$method(...$this->requestParams);
+            $controllerInstance->$method(...$resolveParams);
         }
 	}
+
+    protected function resolveParams(callable|array $action, array $params): array
+    {
+        $reflection = is_array($action)
+            ? new \ReflectionMethod($action[0], $action[1])
+            : new \ReflectionFunction($action);
+
+        $resolved = [];
+
+        foreach ($reflection->getParameters() as $param) {
+            $name  = $param->getName();
+            $value = $params[$name] ?? null;
+
+            if (($value === null || $value === '') && $param->isDefaultValueAvailable()) {
+                $resolved[] = $param->getDefaultValue(); // берём дефолт из объявления
+            } else {
+                $resolved[] = $value;
+            }
+        }
+
+        return $resolved;
+    }
 }
