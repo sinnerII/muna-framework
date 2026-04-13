@@ -5,14 +5,16 @@
 	"license": "MIT",
     "autoload": {
         "psr-4": {
-            "Muna\\Framework\\": "src/"
+            "Munastack\\": "src/Munastack/"
         },
         "files": [
             "src/Helpers/helpers.php"
         ]
     },
     "require": {
-        "php": ">=8.4",
+        "php": ">=8.4"
+    },
+    "replace": {
         "munastack/http": "self.version",
         "munastack/routing": "self.version",
         "munastack/config": "self.version",
