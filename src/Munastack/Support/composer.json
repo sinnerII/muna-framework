@@ -1,13 +1,13 @@
 {
-    "name": "munastack/http",
-    "description": "MunaStack HTTP Component",
+    "name": "munastack/support",
+    "description": "MunaStack Support Component",
     "license": "MIT",
     "require": {
         "php": "^8.4"
     },
     "autoload": {
         "psr-4": {
-            "Munastack\\Http\\": "src/"
+            "Munastack\\Support\\": "src/"
         }
     },
     "require": {

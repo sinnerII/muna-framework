@@ -1,6 +1,6 @@
 <?php
 
-namespace Muna\Framework\Support;
+namespace Munastack\Support;
 
 class Container
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace Muna\Framework\Foundation;
+namespace Munastack\Foundation;
 
-use Muna\Framework\Config\Repository;
-use Muna\Framework\Support\Container;
+use Munastack\Config\Repository;
+use Munastack\Support\Container;
 
 class Application
 {

@@ -15,6 +15,8 @@
         "php": ">=8.4",
         "munastack/http": "self.version",
         "munastack/routing": "self.version",
-        "munastack/config": "self.version"
+        "munastack/config": "self.version",
+        "munastack/foundation": "self.version",
+        "munastack/support": "self.version"
     }
 }

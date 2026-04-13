@@ -1,6 +1,6 @@
 <?php
 
-namespace Muna\Framework\Support\Facades;
+namespace Munastack\Support\Facades;
 
 class Route extends Facade
 {

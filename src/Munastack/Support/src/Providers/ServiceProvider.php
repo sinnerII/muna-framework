@@ -1,9 +1,9 @@
 <?php
 
-namespace Muna\Framework\Support\Providers;
+namespace Munastack\Support\Providers;
 
-use Muna\Framework\Foundation\Application;
-use Muna\Framework\Support\Container;
+use Munastack\Foundation\Application;
+use Munastack\Support\Container;
 
 abstract class ServiceProvider
 {

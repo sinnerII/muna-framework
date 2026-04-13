@@ -1,13 +1,13 @@
 {
-    "name": "munastack/routing",
-    "description": "Munastack Routing package",
+    "name": "munastack/foundation",
+    "description": "MunaStack Foundation Component",
     "license": "MIT",
     "require": {
         "php": "^8.4"
     },
     "autoload": {
         "psr-4": {
-            "Munastack\\Routing\\": "src/"
+            "Munastack\\Foundation\\": "src/"
         }
     },
     "require": {

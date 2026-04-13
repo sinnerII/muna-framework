@@ -1,7 +1,7 @@
 <?php
 
-use Muna\Framework\Foundation\Application;
-use Muna\Framework\Http\Request;
+use Munastack\Foundation\Application;
+use Munastack\Http\Request;
 
 if (!function_exists('app')) {
     function app(): Application
