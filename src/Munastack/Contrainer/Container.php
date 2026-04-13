@@ -1,5 +1,5 @@
 <?php
-namespace Munastack\Support;
+namespace Munastack\Container;
 
 use Psr\Container\ContainerInterface;
 

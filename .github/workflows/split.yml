@@ -22,6 +22,8 @@ jobs:
             repository: 'munastack-foundation'
           - local_path: 'src/Munastack/Support'
             repository: 'munastack-support'
+          - local_path: 'src/Munastack/Container'
+            repository: 'munastack-container'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

@@ -28,6 +28,7 @@
         "munastack/routing": "self.version",
         "munastack/config": "self.version",
         "munastack/foundation": "self.version",
-        "munastack/support": "self.version"
+        "munastack/support": "self.version",
+        "munastack/container": "self.version"
     }
 }
