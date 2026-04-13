@@ -1,0 +1,16 @@
+{
+    "name": "munastack/routing",
+    "description": "Munastack Routing package",
+    "license": "MIT",
+    "require": {
+        "php": "^8.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Munastack\\Routing\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=8.4"
+    }
+}

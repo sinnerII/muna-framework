@@ -1,0 +1,16 @@
+{
+    "name": "munastack/config",
+    "description": "MunaStack Config Component",
+    "license": "MIT",
+    "require": {
+        "php": "^8.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Munastack\\Config\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=8.4"
+    }
+}

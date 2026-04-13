@@ -13,6 +13,8 @@
     },
     "require": {
         "php": ">=8.4",
-        "munastack/http": "self.version"
+        "munastack/http": "self.version",
+        "munastack/routing": "self.version",
+        "munastack/config": "self.version"
     }
 }

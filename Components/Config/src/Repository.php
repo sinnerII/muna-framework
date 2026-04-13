@@ -1,6 +1,6 @@
 <?php
 
-namespace Muna\Framework\Config;
+namespace Munastack\Config;
 
 class Repository
 {

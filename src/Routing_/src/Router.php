@@ -3,8 +3,9 @@
 namespace Munastack\Routing;
 
 use Closure;
-use Munastack\Http\Request;
-use Munastack\Http\Response;
+use Muna\Framework\Foundation\Application;
+use Muna\Framework\Http\Request;
+use Muna\Framework\Http\Response;
 
 class Router
 {
@@ -19,6 +20,16 @@ class Router
 		$this->response = new Response();
 		$this->routes = RouteCollection::create();
 	}
+
+    public function getMethod()
+    {
+        return $this->request->method;
+    }
+
+    public function getUri()
+    {
+        return $this->request->uri;
+    }
 
     public function get(string $uri, Closure|array $action): Route
     {
