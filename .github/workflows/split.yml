@@ -12,11 +12,11 @@ jobs:
       fail-fast: false
       matrix:
         package:
-          - local_path: 'Components/Http'
+          - local_path: 'src/Munastack/Http'
             repository: 'munastack-http'
-          - local_path: 'Components/Routing'
+          - local_path: 'src/Munastack/Routing'
             repository: 'munastack-routing'
-          - local_path: 'Components/Config'
+          - local_path: 'src/Munastack/Config'
             repository: 'munastack-config'
     steps:
       - name: Checkout code
