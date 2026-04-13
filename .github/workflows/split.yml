@@ -18,6 +18,10 @@ jobs:
             repository: 'munastack-routing'
           - local_path: 'src/Munastack/Config'
             repository: 'munastack-config'
+          - local_path: 'src/Munastack/Foundation'
+            repository: 'munastack-foundation'
+          - local_path: 'src/Munastack/Support'
+            repository: 'munastack-support'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
